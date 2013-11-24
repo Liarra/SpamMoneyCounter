@@ -10,13 +10,10 @@ class mainSMC:
 	def main(self):
 		self.money = filewriter.getSum()
 		widget.update(self.money)
+		
 		self.cycle()
-		#widget.registerOnClick(self.doItBaby())
+		
 		widget.registerOnClick(self.cycle)
-
-		#tr = threading.Thread(target=self.sleepCycle())
-		#tr.start()
-
 		widget.main()
 
 
@@ -31,8 +28,9 @@ class mainSMC:
 		import datetime
 
 		file = open('log.txt', 'a')
+		
 		file.write(str(datetime.datetime.now()) + "\n")
-		#try:
+		
 		file.write("Into mailbox...\n")
 		self.money += self.checkItAgain()
 
@@ -46,28 +44,17 @@ class mainSMC:
 
 	def cycle(self, anything=None):
 		import traceback
-		time.sleep(10) #Reducing the chance that the internet is not yet on after wake-up
+		time.sleep(20) #Reducing the chance that the internet is not yet on after wake-up
 		file = open('error.txt', 'a')
 		try:
 			if self.t is not None:
 				self.t.cancel()
 			self.doItBaby(anything)
-			self.t = threading.Timer(self.period, self.cycle)
-			self.t.start()
+			
 		except Exception as tr:
 			traceback.print_exc(file)
+		self.t = threading.Timer(self.period, self.cycle)
+		self.t.start()
 		file.close()
-
-	def sleepCycle(self):
-		import traceback
-		file = open('error.txt', 'a')
-		while (True):
-			try:
-				self.doItBaby
-			except Exception as tr:
-				traceback.print_exc(file)
-			time.sleep(self.period)
-		file.close()
-
 
 mainSMC().main()
