@@ -9,16 +9,16 @@ class mainSMC:
 
 	def main(self):
 		import os
+		
+		widget.registerOnClick(self.cycle)
+		
+		t1 = threading.Thread(target=self.cycle)
+		t1.start()
+		
 		self.money = filewriter.getSum()
 		widget.update(self.money)
 		
-		self.cycle()
-		
-		widget.registerOnClick(self.cycle)
-		widget.main()
-		
-		#t.exit()
-		#os._exit(0)
+		widget.main()	
 
 
 	def checkItAgain(self):

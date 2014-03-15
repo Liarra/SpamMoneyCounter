@@ -16,10 +16,10 @@ class TaskBarIcon(wx.TaskBarIcon):
 		super(TaskBarIcon, self).__init__()
 		self.set_icon(self.TRAY_ICON)
 
-	def set_icon(self, path):
-		icon = wx.IconFromBitmap(wx.Bitmap(path))
+	def set_icon(self, path):		
+		iconPic = wx.IconFromBitmap(wx.Bitmap(path))
 		tt="Won $"+str(self.Money)+" so far!"
-		self.SetIcon(icon, tt)
+		self.SetIcon(iconPic, tt)
 		
 	def update(self, money):
 		self.Money=money
@@ -36,37 +36,40 @@ class TaskBarIcon(wx.TaskBarIcon):
 
 
 class TaskBarFrame(wx.Frame):
-	def __init__(self, parent):
-		wx.Frame.__init__(self, parent, style=wx.FRAME_NO_TASKBAR | wx.NO_FULL_REPAINT_ON_RESIZE)
-		self.icon_state = False
-		self.blink_state = False
+    def __init__(self, parent, id, title):
+        wx.Frame.__init__(self, parent, -1, title, size = (1, 1),
+            style=wx.FRAME_NO_TASKBAR|wx.NO_FULL_REPAINT_ON_RESIZE)
 
-		self.tbicon = TaskBarIcon()
-		icon = wx.Icon('icon.png', desiredWidth=22, desiredHeight=22)
-		self.tbicon.SetIcon(icon, '')
-		wx.EVT_TASKBAR_RIGHT_UP(self.tbicon, self.OnTaskBarRightClick)
-		self.Show(True) 
+        self.tbicon = TaskBarIcon()
 
-	def OnTaskBarRightClick(self, evt):
-		self.Close(True)
-		wx.GetApp().ProcessIdle()
+        self.Show(True)
 
-app = wx.App(False)
-#frame = TaskBarFrame(None)
-#frame.Show(True)
-icon=TaskBarIcon()
+    def clickMenu(self, event):
+        self.tbicon.PopupMenu(self.tbmenu)
+        print("Hello, click again!")
+        pass
 
-def main():
+class WidgetRunner(wx.App):
+	frame=None
+	
+	def OnInit(self):
+		self.frame = TaskBarFrame(None, -1, ' ')
+		self.frame.Center(wx.BOTH)
+		self.frame.Show(False)
+		return True
+
+app=WidgetRunner(0)
+def main():		
 	app.MainLoop()
 
 def killItWithFire():
-	icon.Destroy()
 	app.Destroy()
 	app.ExitMainLoop()
 
 def update(money):
 	#print money
-	icon.update(money)
+	app.frame.tbicon.update(money)
 
 def registerOnClick(function):
+	icon=app.frame.tbicon
 	icon.Bind(wx.EVT_TASKBAR_LEFT_DOWN, function)
