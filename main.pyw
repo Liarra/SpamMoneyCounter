@@ -8,6 +8,7 @@ class mainSMC:
 	period = 10 * 60
 
 	def main(self):
+		import os
 		self.money = filewriter.getSum()
 		widget.update(self.money)
 		
@@ -15,6 +16,9 @@ class mainSMC:
 		
 		widget.registerOnClick(self.cycle)
 		widget.main()
+		
+		#t.exit()
+		#os._exit(0)
 
 
 	def checkItAgain(self):
@@ -50,11 +54,11 @@ class mainSMC:
 			if self.t is not None:
 				self.t.cancel()
 			self.doItBaby(anything)
-			
 		except Exception as tr:
 			traceback.print_exc(file)
-		self.t = threading.Timer(self.period, self.cycle)
-		self.t.start()
-		file.close()
+		finally:
+			self.t = threading.Timer(self.period, self.cycle)
+			self.t.start()
+			file.close()
 
 mainSMC().main()
