@@ -215,3 +215,7 @@ pip-log.txt
 .mr.developer.cfg
 
 .idea/*
+
+log.txt
+sum
+geany_run_script.sh
