@@ -1,9 +1,10 @@
 #!/usr/bin/env python2
+# -*- coding: utf-8 -*-
 
 import re
 def findBigNumericNumbers(letter):
 	ret={}
-	regex=re.compile(r"(\$ ?\d{1,3}([., ]?000)+)")
+	regex=re.compile(r"(\$ ?\d{1,3}[., ]? ?(\d{3})?([., ]? ?000)+)")
 	match=regex.finditer(letter)
 	for m in match:
 		ret[m.group()]=m.start()
@@ -43,6 +44,8 @@ def getAmountInDollars(letter):
 	
 	return sum
 
-#letter="$1000 $60.0m $ 123 million $50m"
+letter="Microsoft Office появились Ваш E-Mail $ 900,000.00 USD. Отправить Подробности, имя, номер телефона & страну"
+#print findBigNumericNumbers(letter)
+#print getAmountInDollars(letter)
 #print findShortNumbers(letter)
 #print getAmountInDollars(letter)

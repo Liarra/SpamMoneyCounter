@@ -1,5 +1,8 @@
 import heuristics
-def getIntoMailbox(server,name,password):
+name=""
+password=""
+
+def getIntoMailbox(server):
 	import imaplib
 	conn= imaplib.IMAP4_SSL('imap.googlemail.com')
 	conn.login(name, password)
@@ -31,5 +34,3 @@ def getIntoMailbox(server,name,password):
 	conn.logout()
 	print "$"+str(s);
 	return s
-
-#getIntoMailbox("","m.e.tigra","Licantr0pia")
