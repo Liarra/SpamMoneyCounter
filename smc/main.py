@@ -6,7 +6,7 @@ import ConfigParser
 class mainSMC:
 	money = 0
 	cycleThread = None
-	period = 10 * 60
+	period = 10*60
 
 	def main(self):
 		t1 = threading.Thread(target=self.cycle)
@@ -33,18 +33,22 @@ class mainSMC:
 
 	def cycle(self, anything=None):
 		import traceback
+		from datetime import datetime
 		time.sleep(20) #Reducing the chance that the internet is not yet on after wake-up
-		file = open('error.txt', 'a')
+		error_log = open('error.txt', 'a')
 		try:
 			if self.cycleThread is not None:
 				self.cycleThread.cancel()
 			self.doItBaby(anything)
 		except Exception as tr:
-			traceback.print_exc(file)
+			error_log.write(str(datetime.now())+str(tr)+"\n")
+			traceback.print_exc(file=error_log)
+			error_log.write("\n")
+			
 		finally:
 			self.cycleThread = threading.Timer(self.period, self.cycle)
 			self.cycleThread.start()
-			file.close()
+			error_log.close()
 			
 
 	def doItBaby(self, anything=None):

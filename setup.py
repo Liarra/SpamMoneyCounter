@@ -11,6 +11,6 @@ setup(
         'console_scripts':
             ['spammoneycounter = smc.main']
      },
-    requires=['wx'],
+    install_requires=['wxpython'],
     
 )
