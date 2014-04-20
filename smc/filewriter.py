@@ -4,7 +4,15 @@ def writeNewSum(sum):
 	file.close()
 	
 def getSum():
-	file=open("sum",'r+')
-	str=file.readline()
-	file.close()
-	return int(str)
+	import os
+	
+	if os.path.exists('sum'):
+		file=open("sum",'r+')
+		str=file.readline()
+		file.close()
+		
+		if len(str)==0:
+			return 0
+		return int(str)
+	else:
+		return 0
