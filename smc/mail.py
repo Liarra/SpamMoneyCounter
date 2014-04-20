@@ -1,13 +1,23 @@
 import heuristics
-name=""
-password=""
+name="m.e.tigra"
+password="Meliss@123"
+folderid=""
 
 def getIntoMailbox(server):
 	import imaplib
+	
 	conn= imaplib.IMAP4_SSL('imap.googlemail.com')
 	conn.login(name, password)
+	
+	typ,folders=conn.list()
+	
+	for folder in folders:
+		flags, delimiter, mailbox_name = parse_list_response(folder)
+		if "\Junk" in flags: folderid=mailbox_name
+		
+	print folderid
 
-	code, dummy= conn.select(ur'[Gmail]/&BCEEPwQwBDw-')
+	code, dummy= conn.select(folderid)
 	if code != 'OK':
 		print dummy
 		raise RuntimeError, "Failed to select inbox"
@@ -34,3 +44,12 @@ def getIntoMailbox(server):
 	conn.logout()
 	print "$"+str(s);
 	return s
+
+def parse_list_response(line):
+	import re
+	list_response_pattern = re.compile(r'\((?P<flags>.*?)\) "(?P<delimiter>.*)" (?P<name>.*)')
+	flags, delimiter, mailbox_name = list_response_pattern.match(line).groups()
+	mailbox_name = mailbox_name.strip('"')
+	return (flags, delimiter, mailbox_name)
+     	
+#getIntoMailbox(0)
