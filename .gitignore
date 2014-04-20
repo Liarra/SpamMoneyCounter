@@ -222,3 +222,4 @@ geany_run_script.sh
 virtual/
 smc/*.txt
 smc/*.config
+images/

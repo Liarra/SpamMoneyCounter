@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 import wx
+import icon
+import base64 
+import cStringIO
 
 TRAY_TOOLTIP = 'System Tray Demo'
 
@@ -10,14 +13,18 @@ def create_menu_item(menu, label, func):
 	return item
 
 class TaskBarIcon(wx.TaskBarIcon):
-	TRAY_ICON='icon.png'
+	TRAY_ICON=base64.b64decode(icon.icon)
 	Money=0
 	def __init__(self):
 		super(TaskBarIcon, self).__init__()
 		self.set_icon(self.TRAY_ICON)
 
-	def set_icon(self, path):		
-		iconPic = wx.IconFromBitmap(wx.Bitmap(path))
+	def set_icon(self, icon_bytes):	
+		icon_stream=cStringIO.StringIO(icon_bytes)
+		icon_image=wx.ImageFromStream(icon_stream)
+		icon_bitmap=wx.BitmapFromImage(icon_image)
+		iconPic=wx.IconFromBitmap(icon_bitmap)
+
 		tt="Won $"+str(self.Money)+" so far!"
 		self.SetIcon(iconPic, tt)
 		
