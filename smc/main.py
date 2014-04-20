@@ -41,7 +41,7 @@ class mainSMC:
 				self.cycleThread.cancel()
 			self.doItBaby(anything)
 		except Exception as tr:
-			error_log.write(str(datetime.now())+str(tr)+"\n")
+			error_log.write('['+str(datetime.now())+'] '+str(tr)+"\n")
 			traceback.print_exc(file=error_log)
 			error_log.write("\n")
 			
@@ -52,19 +52,9 @@ class mainSMC:
 			
 
 	def doItBaby(self, anything=None):
-		import datetime
-
-		#file = open('log.txt', 'a')
-		
-		#file.write(str(datetime.datetime.now()) + "\n")
-		
-		#file.write("Into mailbox...\n")
 		self.money += self.checkItAgain()
 
-		#file.write("Writing the file...\n")
 		self.rewriteIt(self.money)
-
-		#file.write("Updating UI...\n")
 		widget.update(self.money)
 
 		file.close()
