@@ -71,7 +71,8 @@ def main():
 	app.MainLoop()
 
 def killItWithFire():
-	app.Destroy()
+	app.frame.Close()
+	app.Exit()
 	app.ExitMainLoop()
 
 def update(money):

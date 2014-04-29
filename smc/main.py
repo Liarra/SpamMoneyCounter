@@ -10,12 +10,16 @@ class mainSMC:
 
 	def main(self):
 		t1 = threading.Thread(target=self.cycle)
+		t1.setDaemon(True)
 		t1.start()
 		
 		self.money = filewriter.getSum()
 		
 		self.prepareMail()
-		self.prepareWidget()		
+		self.prepareWidget()
+		print "Bye"
+		# t1.
+		#exit(0)
 		#That's it, this line runs the wxPython application loop, so no lines after this are executed
 
 	def prepareMail(self):
@@ -47,6 +51,7 @@ class mainSMC:
 			
 		finally:
 			self.cycleThread = threading.Timer(self.period, self.cycle)
+			self.cycleThread.setDaemon(True)
 			self.cycleThread.start()
 			error_log.close()
 			
@@ -56,8 +61,6 @@ class mainSMC:
 
 		self.rewriteIt(self.money)
 		widget.update(self.money)
-
-		file.close()
 		
 	def checkItAgain(self):
 		newmoney = mail.getIntoMailbox("")
