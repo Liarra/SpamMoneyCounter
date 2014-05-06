@@ -17,10 +17,9 @@ class mainSMC:
 		
 		self.prepareMail()
 		self.prepareWidget()
+				#That's it, this line runs the wxPython application loop, so no lines after this are executed before app exit
 		print "Bye"
-		# t1.
-		#exit(0)
-		#That's it, this line runs the wxPython application loop, so no lines after this are executed
+		exit (0)
 
 	def prepareMail(self):
 		cfg=ConfigParser.SafeConfigParser()
@@ -30,33 +29,40 @@ class mainSMC:
 
 
 	def prepareWidget(self):
-		#widget.registerOnClick(self.cycle)
 		widget.update(self.money)
 		widget.main()
 			
 
 	def cycle(self, anything=None):
-		import traceback
 		from datetime import datetime
 		time.sleep(20) #Reducing the chance that the internet is not yet on after wake-up
-		error_log = open('error.txt', 'a')
+		
 		try:
 			if self.cycleThread is not None:
 				self.cycleThread.cancel()
-			self.doItBaby(anything)
+			self.doItBaby()
 		except Exception as tr:
-			error_log.write('['+str(datetime.now())+'] '+str(tr)+"\n")
-			traceback.print_exc(file=error_log)
-			error_log.write("\n")
+			self.writeToLog(tr)
 			
 		finally:
 			self.cycleThread = threading.Timer(self.period, self.cycle)
 			self.cycleThread.setDaemon(True)
 			self.cycleThread.start()
-			error_log.close()
-			
+	
+	
+	def writeToLog(self, exception):
+		import traceback
+		
+		error_log = open('error.txt', 'a')
+		
+		error_log.write('['+str(datetime.now())+'] '+str(tr)+"\n")
+		traceback.print_exc(file=error_log)
+		error_log.write("\n")
+		
+		error_log.close()
+		
 
-	def doItBaby(self, anything=None):
+	def doItBaby(self):
 		self.money += self.checkItAgain()
 
 		self.rewriteIt(self.money)
