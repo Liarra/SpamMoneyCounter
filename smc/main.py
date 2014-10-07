@@ -1,6 +1,7 @@
 import mail, filewriter, widget
 import threading, time
 import ConfigParser
+from datetime import datetime
 
 
 class mainSMC:
@@ -34,7 +35,7 @@ class mainSMC:
 			
 
 	def cycle(self, anything=None):
-		from datetime import datetime
+		
 		time.sleep(20) #Reducing the chance that the internet is not yet on after wake-up
 		
 		try:
