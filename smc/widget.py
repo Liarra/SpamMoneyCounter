@@ -5,27 +5,17 @@ import base64
 import cStringIO
 
 
-
-
-def kill_it_with_fire():
-    app.Exit()
-
-def create_menu_item(menu, label, func):
-    item = wx.MenuItem(menu, -1, label)
-    menu.Bind(wx.EVT_MENU, func, id=item.GetId())
-    menu.AppendItem(item)
-    return item
-
-
 class TaskBarIcon(wx.TaskBarIcon):
     TRAY_ICON = base64.b64decode(icon.icon)
     Money = 0
 
-    def __init__(self):
+    def __init__(self, frame):
+        self.frame = frame
         super(TaskBarIcon, self).__init__()
-        self.set_icon(self.TRAY_ICON)
+        self.set_icon()
 
-    def set_icon(self, icon_bytes):
+    def set_icon(self):
+        icon_bytes = self.TRAY_ICON
         icon_stream = cStringIO.StringIO(icon_bytes)
         icon_image = wx.ImageFromStream(icon_stream)
         icon_bitmap = wx.BitmapFromImage(icon_image)
@@ -34,56 +24,46 @@ class TaskBarIcon(wx.TaskBarIcon):
         tt = "Won $" + str(self.Money) + " so far!"
         self.SetIcon(icon_pic, tt)
 
-    def update(self, money):
-        self.Money = money
-        self.set_icon(self.TRAY_ICON)
-
-    def exit(self, anything=None):
-        wx.CallAfter(kill_it_with_fire)
-
-
-class TaskBarFrame(wx.Frame):
-    def __init__(self, parent, id, title):
-        wx.Frame.__init__(self, parent, -1, title, size=(0, 0),
-                          style=wx.FRAME_NO_TASKBAR | wx.NO_FULL_REPAINT_ON_RESIZE)
-
-        self.tbicon = TaskBarIcon()
-        self.tbmenu = self.create_popup_menu()
-        self.Show(False)
-
-    def create_popup_menu(self):
+    def CreatePopupMenu(self):
         menu = wx.Menu()
-        menu.AppendSeparator()
-        create_menu_item(menu, 'Exit', kill_it_with_fire)
+        self.create_menu_item(menu, 'Exit', self.exit)
         return menu
 
-    def click_menu(self, event):
-        self.tbicon.PopupMenu(self.tbmenu)
-        print("Hello, click again!")
-        pass
+    def create_menu_item(self, menu, label, func):
+        item = wx.MenuItem(menu, -1, label)
+        menu.Bind(wx.EVT_MENU, func, id=item.GetId())
+        menu.AppendItem(item)
+        return item
+
+    def update(self, money):
+        self.Money = money
+        self.set_icon()
+
+    def exit(self, anything=None):
+        wx.CallAfter(self.Destroy)
+        self.frame.Close()
 
 
-class WidgetRunner(wx.App):
-    frame = None
+class App(wx.App):
+    def __init__(self):
+        self.frame = None
+        self.icon = None
+        super(App, self).__init__()
 
     def OnInit(self):
-        self.frame = TaskBarFrame(None, -1, ' ')
-        self.frame.Center(wx.BOTH)
-        self.frame.Show(False)
+        self.frame = wx.Frame(None)
+        self.icon = TaskBarIcon(self.frame)
+        self.SetTopWindow(self.frame)
         return True
 
 
-app = WidgetRunner(0)
+class SMCWidget:
+    def __init__(self):
+        self.app = App()
 
+    def run(self):
+        self.app.MainLoop()
 
-def main():
-    app.MainLoop()
+    def update(self, money):
+        self.app.icon.update(money)
 
-
-def update(money):
-    app.frame.tbicon.update(money)
-
-
-def register_on_click(function):
-    icon = app.frame.tbicon
-    icon.Bind(wx.EVT_TASKBAR_LEFT_DOWN, function)

@@ -5,7 +5,7 @@ from datetime import datetime
 
 import filewriter
 import mail
-import widget
+from widget import SMCWidget
 
 
 def load_mail_credentials():
@@ -39,7 +39,11 @@ def write_to_log(exception):
 class MainSMC:
     money = 0
     period = 5
+
     # period = 10 * 60
+
+    def __init__(self):
+        self.widget = SMCWidget()
 
     def main(self):
         t1 = threading.Thread(target=self.cycle)
@@ -49,13 +53,13 @@ class MainSMC:
         self.money = filewriter.get_sum()
 
         load_mail_credentials()
-        self.init_widget()
+        self.start_widget()
         # That's it, this line runs the wxPython application loop, so no lines after this are executed before app exit
         exit(0)
 
-    def init_widget(self):
-        widget.update(self.money)
-        widget.main()
+    def start_widget(self):
+        self.widget.update(self.money)
+        self.widget.run()
 
     def cycle(self, anything=None):
 
