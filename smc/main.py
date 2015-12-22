@@ -24,10 +24,22 @@ def write_new_amount(num):
     filewriter.write_new_sum(num)
 
 
+def write_to_log(exception):
+    import traceback
+
+    error_log = open('error.txt', 'a')
+
+    error_log.write('[' + str(datetime.now()) + '] ' + str(exception) + "\n")
+    traceback.print_exc(file=error_log)
+    error_log.write("\n")
+
+    error_log.close()
+
+
 class MainSMC:
     money = 0
-    cycleThread = None
-    period = 10 * 60
+    period = 5
+    # period = 10 * 60
 
     def main(self):
         t1 = threading.Thread(target=self.cycle)
@@ -39,7 +51,6 @@ class MainSMC:
         load_mail_credentials()
         self.init_widget()
         # That's it, this line runs the wxPython application loop, so no lines after this are executed before app exit
-        print "Bye"
         exit(0)
 
     def init_widget(self):
@@ -48,30 +59,14 @@ class MainSMC:
 
     def cycle(self, anything=None):
 
-        time.sleep(20)  # Reducing the chance that the internet is not yet on after wake-up
+        while True:
+            time.sleep(self.period)
 
-        try:
-            if self.cycleThread is not None:
-                self.cycleThread.cancel()
-            self.check_and_update()
-        except Exception as tr:
-            self.writeToLog(tr)
-
-        finally:
-            self.cycleThread = threading.Timer(self.period, self.cycle)
-            self.cycleThread.setDaemon(True)
-            self.cycleThread.start()
-
-    def writeToLog(self, exception):
-        import traceback
-
-        error_log = open('error.txt', 'a')
-
-        error_log.write('[' + str(datetime.now()) + '] ' + str(exception) + "\n")
-        traceback.print_exc(file=error_log)
-        error_log.write("\n")
-
-        error_log.close()
+            try:
+                self.check_and_update()
+                print "Alive"
+            except Exception as tr:
+                write_to_log(tr)
 
     def check_and_update(self):
         self.money += check_new_money()

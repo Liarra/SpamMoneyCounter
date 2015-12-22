@@ -5,6 +5,11 @@ import base64
 import cStringIO
 
 
+
+
+def kill_it_with_fire():
+    app.Exit()
+
 def create_menu_item(menu, label, func):
     item = wx.MenuItem(menu, -1, label)
     menu.Bind(wx.EVT_MENU, func, id=item.GetId())
@@ -33,12 +38,6 @@ class TaskBarIcon(wx.TaskBarIcon):
         self.Money = money
         self.set_icon(self.TRAY_ICON)
 
-    def create_popup_menu(self):
-        menu = wx.Menu()
-        menu.AppendSeparator()
-        create_menu_item(menu, 'Exit', self.exit)
-        return menu
-
     def exit(self, anything=None):
         wx.CallAfter(kill_it_with_fire)
 
@@ -49,14 +48,19 @@ class TaskBarFrame(wx.Frame):
                           style=wx.FRAME_NO_TASKBAR | wx.NO_FULL_REPAINT_ON_RESIZE)
 
         self.tbicon = TaskBarIcon()
+        self.tbmenu = self.create_popup_menu()
+        self.Show(False)
 
-        self.Show(False)
-        self.Show(False)
-    #
-    # def click_menu(self, event):
-    #     self.tbicon.PopupMenu(self.tbmenu)
-    #     print("Hello, click again!")
-    #     pass
+    def create_popup_menu(self):
+        menu = wx.Menu()
+        menu.AppendSeparator()
+        create_menu_item(menu, 'Exit', kill_it_with_fire)
+        return menu
+
+    def click_menu(self, event):
+        self.tbicon.PopupMenu(self.tbmenu)
+        print("Hello, click again!")
+        pass
 
 
 class WidgetRunner(wx.App):
@@ -74,10 +78,6 @@ app = WidgetRunner(0)
 
 def main():
     app.MainLoop()
-
-
-def kill_it_with_fire():
-    app.Exit()
 
 
 def update(money):
