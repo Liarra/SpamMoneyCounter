@@ -21,7 +21,7 @@ class TaskBarIcon(wx.TaskBarIcon):
         icon_bitmap = wx.BitmapFromImage(icon_image)
         icon_pic = wx.IconFromBitmap(icon_bitmap)
 
-        tt = "Won $" + str(self.Money) + " so far!"
+        tt = "Got $" + str(self.Money) + " so far!"
         self.SetIcon(icon_pic, tt)
 
     def CreatePopupMenu(self):

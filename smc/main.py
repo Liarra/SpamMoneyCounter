@@ -76,7 +76,7 @@ class MainSMC:
         self.money += check_new_money()
 
         write_new_amount(self.money)
-        widget.update(self.money)
+        self.widget.update(self.money)
 
 
 if __name__ == "__main__":
