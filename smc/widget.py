@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 import wx
+from threading import Lock
+
 import icon
 import base64
 import cStringIO
@@ -10,19 +12,22 @@ class TaskBarIcon(wx.TaskBarIcon):
     Money = 0
 
     def __init__(self, frame):
-        self.frame = frame
         super(TaskBarIcon, self).__init__()
-        self.set_icon()
+        self.moneyLock = Lock()
+        self.frame = frame
 
-    def set_icon(self):
         icon_bytes = self.TRAY_ICON
         icon_stream = cStringIO.StringIO(icon_bytes)
         icon_image = wx.ImageFromStream(icon_stream)
         icon_bitmap = wx.BitmapFromImage(icon_image)
         icon_pic = wx.IconFromBitmap(icon_bitmap)
+        self.icon_pic = icon_pic
 
+        self.set_icon()
+
+    def set_icon(self):
         tt = "Got $" + str(self.Money) + " so far!"
-        self.SetIcon(icon_pic, tt)
+        self.SetIcon(self.icon_pic, tt)
 
     def CreatePopupMenu(self):
         menu = wx.Menu()
@@ -36,8 +41,10 @@ class TaskBarIcon(wx.TaskBarIcon):
         return item
 
     def update(self, money):
+        self.moneyLock.acquire()
         self.Money = money
         self.set_icon()
+        self.moneyLock.release()
 
     def exit(self, anything=None):
         wx.CallAfter(self.Destroy)
@@ -59,11 +66,13 @@ class App(wx.App):
 
 class SMCWidget:
     def __init__(self):
+        self.lock = Lock()
         self.app = App()
 
     def run(self):
         self.app.MainLoop()
 
     def update(self, money):
-        self.app.icon.update(money)
-
+        self.lock.acquire()
+        wx.CallAfter(self.app.icon.update,money)
+        self.lock.release()

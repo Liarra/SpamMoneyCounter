@@ -73,10 +73,12 @@ class MainSMC:
                 write_to_log(tr)
 
     def check_and_update(self):
+        old_money = self.money
         self.money += check_new_money()
 
-        write_new_amount(self.money)
-        self.widget.update(self.money)
+        if old_money != self.money:
+            write_new_amount(self.money)
+            self.widget.update(self.money)
 
 
 if __name__ == "__main__":
