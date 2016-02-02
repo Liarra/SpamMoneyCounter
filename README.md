@@ -4,8 +4,10 @@ A simple program that counts money sent you by spammers. Works with GMail accoun
 # How to use
 1. Fill in your credentials in mailbox.config file. Example:
 
-```[Gmail]
+```
+[Gmail]
 login=john.smith
-password=cool.password```
+password=cool.password
+```
 
 2. Run smc\main.py from its containing folder.
