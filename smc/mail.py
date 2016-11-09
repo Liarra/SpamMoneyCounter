@@ -18,11 +18,11 @@ def get_into_mailbox(server="imap.googlemail.com"):
         if "\Junk" in flags:
             folder_id = mailbox_name
 
-    print folder_id
+    #print folder_id
 
     code, dummy = conn.select(folder_id)
     if code != 'OK':
-        print dummy
+        #print dummy
         raise RuntimeError, "Failed to select inbox"
 
     code, data = conn.search(None, 'ALL')
@@ -38,14 +38,14 @@ def get_into_mailbox(server="imap.googlemail.com"):
             d = heuristics.get_amount_in_dollars(str(data))
             s += d
             if d > 0:
-                print "removing..."
+                #print "removing..."
                 conn.store(msgid, '+FLAGS', '\\Deleted')
         else:
             raise RuntimeError, "could not retrieve msgid %r" % msgid
 
     conn.close()
     conn.logout()
-    print "$" + str(s)
+    #print "$" + str(s)
     return s
 
 

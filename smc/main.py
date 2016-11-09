@@ -68,7 +68,7 @@ class MainSMC:
 
             try:
                 self.check_and_update()
-                print "Alive"
+                #print "Alive"
             except Exception as tr:
                 write_to_log(tr)
 

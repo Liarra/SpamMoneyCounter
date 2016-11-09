@@ -26,7 +26,7 @@ class TaskBarIcon(wx.TaskBarIcon):
         self.set_icon()
 
     def set_icon(self):
-        tt = "Got $" + str(self.Money) + " so far!"
+        tt = "Got $" + "{:,}".format(self.Money) + " so far!"
         self.SetIcon(self.icon_pic, tt)
 
     def CreatePopupMenu(self):
